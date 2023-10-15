@@ -22,29 +22,24 @@ namespace SessionService.Controllers
         public ActionResult Post(string userName, bool Status)
         {
         
-            if(Status == true)
-            {
-                if (DataHandler.OnlineUsers.Contains(userName)){
+            bool suscces =  LogicFunctions.HandleOnlineList(userName, Status);
 
+            if(suscces)
+            {
+                if (Status)
+                {
+                    return Ok(userName + " is now Online"); ;
                 } else
                 {
-                    DataHandler.OnlineUsers.Add(userName);
-                    return Ok(userName + " is now Online");
-                }
-             
-            } else
-            {
-                if (DataHandler.OnlineUsers.Contains(userName))
-                {
-                    DataHandler.OnlineUsers.Remove(userName);
                     return Ok(userName + " is now Offline");
                 }
-                else
-                {
-                    
-                }
+                
             }
-            return NotFound();
+            else
+            {
+                return NotFound();
+            }
+         
         }
 
 

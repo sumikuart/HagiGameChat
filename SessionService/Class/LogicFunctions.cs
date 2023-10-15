@@ -1,4 +1,5 @@
-﻿using SessionService.Model;
+﻿using SessionService.Data;
+using SessionService.Model;
 
 namespace SessionService.Class
 {
@@ -25,6 +26,41 @@ namespace SessionService.Class
 
         
 
+
+        }
+
+
+        public static bool HandleOnlineList(string UserNamer, bool newStatus)
+        {
+
+
+            if (newStatus == true)
+            {
+                if (DataHandler.OnlineUsers.Contains(UserNamer))
+                {
+
+                }
+                else
+                {
+                    DataHandler.OnlineUsers.Add(UserNamer);
+                    return true;
+                }
+
+            }
+            else
+            {
+                if (DataHandler.OnlineUsers.Contains(UserNamer))
+                {
+                    DataHandler.OnlineUsers.Remove(UserNamer);
+                    return true;
+                }
+                else
+                {
+
+                }
+            }
+
+            return false;
 
         }
 

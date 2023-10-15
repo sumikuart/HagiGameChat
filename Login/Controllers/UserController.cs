@@ -2,7 +2,12 @@ using Login.Class;
 using Login.Data;
 using Login.Model;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using System;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace Login.Controllers
 {
@@ -11,32 +16,41 @@ namespace Login.Controllers
     public class UserController : ControllerBase
     {
  
+        public static User user = new User();
+        private readonly IConfiguration _configuration;
 
         private readonly ILogger<UserController> _logger;
 
-        public UserController(ILogger<UserController> logger)
+        public UserController(ILogger<UserController> logger, IConfiguration config)
         {
             _logger = logger;
+            _configuration = config;
         }
 
 
-        [HttpGet]
-        public ActionResult<bool> ValidateUser(string name, string password)
+        [HttpPost("Login")]
+        public ActionResult<string> ValidateUser(LoginObject loginData)
         {
          
             foreach(User user in DataHandler.UserList)
             {
-                if(user.UserName == name)
+                if(user.UserName == loginData.UserName)
                 {
-                    if(user.Password == password)
+                    if(!BCrypt.Net.BCrypt.Verify(loginData.Password, user.PasswordHash))
                     {
-                        LogicFunctions.UpdateDataOnSessionService();
-                        return Ok(true);
+
+                        return BadRequest("Wrong Password");
+                    }
+                    else
+                    {
+                        LogicFunctions.UpdateDataOnSessionService(user);
+                        string token = CreateWebToken(user);
+                        return Ok(token);
                     }
                 }
             }
 
-            return Ok(false);
+            return BadRequest("No User Match");
 
         }
 
@@ -69,6 +83,28 @@ namespace Login.Controllers
 
         
       
+        }
+
+        private string CreateWebToken(User user)
+        {
+            List<Claim> claims = new List<Claim> { 
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(ClaimTypes.Role, user.Role)
+            };
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("AppSettings:Token").Value!));
+
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+
+            var token = new JwtSecurityToken(
+                claims: claims,
+                expires: DateTime.Now.AddDays(1),
+                signingCredentials: creds
+                );
+
+            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+
+            return jwt;
         }
         
     }
