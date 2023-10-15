@@ -1,4 +1,7 @@
 
+using Login.Class;
+using Login.Model;
+
 namespace Login
 {
     public class Program
@@ -8,8 +11,8 @@ namespace Login
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-
             builder.Services.AddControllers();
+
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -24,10 +27,15 @@ namespace Login
 
             app.UseAuthorization();
 
+            ConnectionManager.CreateConnections();
+
 
             app.MapControllers();
 
             app.Run();
+
+
+         
         }
     }
 }

@@ -43,9 +43,9 @@ namespace Login.Controllers
                     }
                     else
                     {
-                        LogicFunctions.UpdateDataOnSessionService(user);
+                        string returnMsg = LogicFunctions.UpdateDataOnSessionService(user);
                         string token = CreateWebToken(user);
-                        return Ok(token);
+                        return Ok("DataState: " + returnMsg + " - Token: " +token);
                     }
                 }
             }

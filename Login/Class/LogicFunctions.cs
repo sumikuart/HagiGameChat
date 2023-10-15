@@ -1,13 +1,19 @@
 ﻿using Login.Model;
+using System.IO;
 
 namespace Login.Class
 {
     public static class LogicFunctions
     {
 
-        public static void UpdateDataOnSessionService(User user)
+        public static string UpdateDataOnSessionService(User user)
         {
-            //To be made
+
+            string response ="";
+
+            //response =ConnectionManager.SessionServiceConnection.SendMsg("C_UO¤" + user.UserName);
+
+            return response;
         }
 
     }

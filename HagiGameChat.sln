@@ -3,17 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33414.496
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client", "Client\Client.csproj", "{CA501377-E0DD-4FEF-85E5-31E97196CE6D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Client", "Client\Client.csproj", "{CA501377-E0DD-4FEF-85E5-31E97196CE6D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Login", "Login\Login.csproj", "{E9F1CC7E-41CE-4ED3-A285-96F9A370343A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Login", "Login\Login.csproj", "{E9F1CC7E-41CE-4ED3-A285-96F9A370343A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameServerRegister", "GameServerRegister\GameServerRegister.csproj", "{45384FD2-CAD6-4B9D-B6BD-AD9EAA8C981F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameServerRegister", "GameServerRegister\GameServerRegister.csproj", "{45384FD2-CAD6-4B9D-B6BD-AD9EAA8C981F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SessionService", "SessionService\SessionService.csproj", "{73E7B48C-6657-4A19-8299-458E8E23CF0D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SessionService", "SessionService\SessionService.csproj", "{73E7B48C-6657-4A19-8299-458E8E23CF0D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameService", "GameService\GameService.csproj", "{7C283BA3-0FC5-4DDA-81D9-B6720DA607EC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameService", "GameService\GameService.csproj", "{7C283BA3-0FC5-4DDA-81D9-B6720DA607EC}"
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{F161CD1E-C691-4CA8-B980-68E3D23F9011}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageBroker", "..\MessageBroker\MessageBroker.csproj", "{A412C3AD-F1C9-470C-B95E-30DE838777A6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{F161CD1E-C691-4CA8-B980-68E3D23F9011}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F161CD1E-C691-4CA8-B980-68E3D23F9011}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F161CD1E-C691-4CA8-B980-68E3D23F9011}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A412C3AD-F1C9-470C-B95E-30DE838777A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A412C3AD-F1C9-470C-B95E-30DE838777A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A412C3AD-F1C9-470C-B95E-30DE838777A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A412C3AD-F1C9-470C-B95E-30DE838777A6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
