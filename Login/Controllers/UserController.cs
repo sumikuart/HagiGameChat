@@ -12,7 +12,8 @@ using System.Text;
 namespace Login.Controllers
 {
     [ApiController]
-    [Route("api/[controller]/[action]")]
+    [Route("[controller]/[action]")]
+
     public class UserController : ControllerBase
     {
  
@@ -43,9 +44,9 @@ namespace Login.Controllers
                     }
                     else
                     {
-                        string returnMsg = LogicFunctions.UpdateDataOnSessionService(user);
+                        //LogicFunctions.UpdateDataOnSessionService(user);
                         string token = CreateWebToken(user);
-                        return Ok("DataState: " + returnMsg + " - Token: " +token);
+                        return Ok(token);
                     }
                 }
             }
@@ -53,6 +54,7 @@ namespace Login.Controllers
             return BadRequest("No User Match");
 
         }
+        
 
         [HttpGet]
         public ActionResult<User> GetUserData(string name)
@@ -76,14 +78,16 @@ namespace Login.Controllers
 
 
         [HttpGet]
-        public ActionResult<List<User>> GetAllUsers()
+        public ActionResult<string> GetAllUsers()
         {
 
-            return Ok(DataHandler.UserList);
+            LogicFunctions.UpdateDataOnSessionService();
+            return Ok(LogicFunctions.UpdateDataOnSessionService());
 
         
       
         }
+     
 
         private string CreateWebToken(User user)
         {

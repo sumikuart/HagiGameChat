@@ -28,7 +28,7 @@ namespace SessionService
 
             app.UseAuthorization();
 
-            ConnectionManager.CreateConnections();
+ 
 
      
 

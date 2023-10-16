@@ -27,7 +27,7 @@ namespace Login
 
             app.UseAuthorization();
 
-            ConnectionManager.CreateConnections();
+            
 
 
             app.MapControllers();

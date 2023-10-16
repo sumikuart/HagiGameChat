@@ -6,7 +6,7 @@ using SessionService.Model;
 namespace SessionService.Controllers
 {
     [ApiController]
-    [Route("api/[controller]/[action]")]
+    [Route("api/[controller]")]
     public class SessionServiceController : ControllerBase
     {
  
@@ -42,38 +42,46 @@ namespace SessionService.Controllers
          
         }
 
-
-            [HttpGet]
-        public ActionResult<SessionUserDataDTO> Get(string userName)
+        [HttpGet]
+        public ActionResult<string> Get()
         {
+            return Ok("Connected");
+        }
+        
 
-            SessionUserDataDTO Result = LogicFunctions.GatherUserData(userName);
-
-            if(Result != null)
+            /*
+                [HttpGet]
+            public ActionResult<SessionUserDataDTO> Get(string userName)
             {
-                foreach (string name in DataHandler.OnlineUsers)
+
+                SessionUserDataDTO Result = LogicFunctions.GatherUserData(userName);
+
+                if(Result != null)
                 {
-                    if (name == userName)
+                    foreach (string name in DataHandler.OnlineUsers)
                     {
-                        Result.Online = true;
-                        break;
+                        if (name == userName)
+                        {
+                            Result.Online = true;
+                            break;
+                        }
+                        else
+                        {
+                            Result.Online = false;
+                        }
                     }
-                    else
-                    {
-                        Result.Online = false;
-                    }
+
+                }
+
+                if (Result == null)
+                {
+                    return NotFound();
+
+                } else { 
+                    return Ok(Result);
                 }
 
             }
-
-            if (Result == null)
-            {
-                return NotFound();
-              
-            } else { 
-                return Ok(Result);
-            }
-
+            */
         }
-    }
 }

@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameService", "GameService\
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{F161CD1E-C691-4CA8-B980-68E3D23F9011}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageBroker", "..\MessageBroker\MessageBroker.csproj", "{A412C3AD-F1C9-470C-B95E-30DE838777A6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MessageBroker", "..\MessageBroker\MessageBroker.csproj", "{A412C3AD-F1C9-470C-B95E-30DE838777A6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -9,10 +9,16 @@ namespace Client
 
         static void Main(string[] args)
         {
+          
+    
             Console.Write("Enter username: ");
             string username = Console.ReadLine();
             startClient(username, "localhost", 13000);
+          
         }
+
+
+       
 
         static void startClient(string username, string ip, int port)
         {

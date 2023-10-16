@@ -4,5 +4,20 @@ services:
   client:
     image: ${DOCKER_REGISTRY-}client
     build:
-      context: .
-      dockerfile: Client/Dockerfile
+        context: .
+        dockerfile: Client/Dockerfile
+
+  Login_api:
+    image: ${DOCKER_REGISTRY-}login
+    build:
+     context: .
+     dockerfile: Login/Dockerfile
+
+  Session_service_api:
+   image: ${DOCKER_REGISTRY-}session_service
+   ports:
+    - "8080:80"
+    - "8081:443"
+   build:
+     context: .
+     dockerfile: SessionService/Dockerfile
