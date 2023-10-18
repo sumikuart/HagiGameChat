@@ -1,20 +1,18 @@
-version: '3.4'
+version: '3.8'
 
 services:
-  client:
-    image: ${DOCKER_REGISTRY-}client
-    build:
-        context: .
-        dockerfile: Client/Dockerfile
-
+  #client:
+  #  image: client
+  #  build:
+  #      dockerfile: Client/Dockerfile
   Login_api:
-    image: ${DOCKER_REGISTRY-}login
+    image: login
     build:
-     context: .
      dockerfile: Login/Dockerfile
-
+    ports:
+    - 8080:80
+    - 8081:443
   session_service_api:
-   image: ${DOCKER_REGISTRY-}session_service
+   image: session_service
    build:
-     context: .
      dockerfile: SessionService/Dockerfile

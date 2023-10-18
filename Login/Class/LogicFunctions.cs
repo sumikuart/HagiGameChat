@@ -41,7 +41,7 @@ namespace Login.Class
 
  
 
-            string baseUrl = "http://host.docker.internal:80/api/";
+            string baseUrl = "http://session_service_api:80/api/";
             string extendenUrl = baseUrl + "WeatherForecast";
             string result = "";
 
