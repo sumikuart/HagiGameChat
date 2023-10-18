@@ -42,16 +42,13 @@ namespace Login.Class
  
 
             string baseUrl = "http://host.docker.internal:80/api/";
-            string extendenUrl = baseUrl + "WeatherForecast/Get";
+            string extendenUrl = baseUrl + "WeatherForecast";
             string result = "";
 
             HttpClient client = new HttpClient(handler);
             HttpResponseMessage response = await client.GetAsync(extendenUrl);
 
   
-
-
-
             if (response.IsSuccessStatusCode)
             {
                 result = await response.Content.ReadAsStringAsync();

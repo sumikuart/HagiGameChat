@@ -81,7 +81,7 @@ namespace Login.Controllers
         public ActionResult<string> GetAllUsers()
         {
 
-            LogicFunctions.UpdateDataOnSessionService();
+            //LogicFunctions.UpdateDataOnSessionService();
             return Ok(LogicFunctions.UpdateDataOnSessionService());
 
         

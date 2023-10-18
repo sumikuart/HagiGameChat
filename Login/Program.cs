@@ -28,8 +28,6 @@ namespace Login
             app.UseAuthorization();
 
             
-
-
             app.MapControllers();
 
             app.Run();
