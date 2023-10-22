@@ -1,11 +1,30 @@
-﻿using System.Net;
+﻿using GameService.Models;
+using System.Net;
 using System.Net.Sockets;
+using System.Text;
+using System.Text.Json;
 
 namespace GameService
 {
     internal class Program
     {
-        private static void Main(string[] args)
+        public static string GetIPAddress()
+        {
+            IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
+            IPAddress iPAddress = ipHostInfo.AddressList[0];
+
+            return iPAddress.ToString();
+        }
+
+        public static HttpClient SetupHttpClient()
+        {
+            HttpClient client = new HttpClient();
+            client.BaseAddress = new Uri("http://gameserver_register/api/GameServerReg");
+            client.Timeout = TimeSpan.FromSeconds(5);
+
+            return client;
+        }
+        public static async void Main(string[] args)
         {
             TcpListener server = null;
             string CurrentUsername = "default";
@@ -21,6 +40,12 @@ namespace GameService
                 Byte[] bytes = new Byte[256];
                 String data = null;
 
+                HttpClient httpClient = SetupHttpClient();
+
+                ServerInfoDTO serverInfoDTO = new ServerInfoDTO() { ip = GetIPAddress(), port = port };
+                var JsonData = JsonSerializer.Serialize(serverInfoDTO);
+                StringContent content = new StringContent(JsonData, Encoding.UTF8, "application/json");
+                HttpResponseMessage response = await httpClient.PostAsync("Register", content);
                 // Perform a blocking call to accept requests.
                 // You could also use server.AcceptSocket() here.
                 using TcpClient client = server.AcceptTcpClient();
