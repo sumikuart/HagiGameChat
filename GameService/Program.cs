@@ -11,20 +11,25 @@ namespace GameService
         public static string GetIPAddress()
         {
             IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
-            IPAddress iPAddress = ipHostInfo.AddressList[0];
-
-            return iPAddress.ToString();
+            foreach (var ip in ipHostInfo.AddressList)
+            {
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    return ip.ToString();
+                }
+            }
+            throw new Exception("No network adapters with an IPv4 address in the system!");
         }
 
         public static HttpClient SetupHttpClient()
         {
             HttpClient client = new HttpClient();
-            client.BaseAddress = new Uri("http://gameserver_register/api/GameServerReg");
+            client.BaseAddress = new Uri("http://GameserverRegister");
             client.Timeout = TimeSpan.FromSeconds(5);
 
             return client;
         }
-        public static async void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             TcpListener server = null;
             string CurrentUsername = "default";
@@ -42,10 +47,14 @@ namespace GameService
 
                 HttpClient httpClient = SetupHttpClient();
 
-                ServerInfoDTO serverInfoDTO = new ServerInfoDTO() { ip = GetIPAddress(), port = port };
-                var JsonData = JsonSerializer.Serialize(serverInfoDTO);
+                Console.WriteLine(GetIPAddress());
+                ServerIpDTO serverIpDTO = new ServerIpDTO() { ip = GetIPAddress(), port = 13000 };
+                var JsonData = JsonSerializer.Serialize(serverIpDTO);
+                Console.WriteLine(JsonData);
                 StringContent content = new StringContent(JsonData, Encoding.UTF8, "application/json");
-                HttpResponseMessage response = await httpClient.PostAsync("Register", content);
+                Console.WriteLine(content);
+                HttpResponseMessage response = await httpClient.PostAsync("api/GameServerReg/Register", content);
+                Console.WriteLine(await response.Content.ReadAsStringAsync());
                 // Perform a blocking call to accept requests.
                 // You could also use server.AcceptSocket() here.
                 using TcpClient client = server.AcceptTcpClient();

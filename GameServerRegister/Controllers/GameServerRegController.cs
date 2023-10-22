@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using GameServerRegister.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameServerRegister.Controllers
@@ -7,7 +8,7 @@ namespace GameServerRegister.Controllers
     [ApiController]
     public class GameServerRegController : ControllerBase
     {
-        public static Dictionary<ServerInfoDTO, DateTime> ServerRegister = new Dictionary<ServerInfoDTO, DateTime>();
+        public static Dictionary<ServerIpDTO, DateTime> ServerRegister = new Dictionary<ServerIpDTO, DateTime>();
 
         public static HttpClient SetupHttpClient(string ip)
         {
@@ -18,20 +19,23 @@ namespace GameServerRegister.Controllers
         }
 
         [HttpGet("GetServer")]
-        public async Task<ActionResult<ServerInfoDTO>> GetServer()
+        public async Task<ActionResult<ServerIpDTO>> GetServer()
         {
             foreach (var dto in ServerRegister)
             {
-                if((dto.Value-DateTime.Now).TotalSeconds > 30)
+                Console.WriteLine($"ip: {dto.Key.ip}:{dto.Key.port}, at time: {dto.Value}");
+                if((DateTime.Now-dto.Value).TotalSeconds > 30)
                 {
+                    Console.WriteLine($"ip: {dto.Key.ip}:{dto.Key.port}, passed the check");
+                    ServerRegister[dto.Key] = DateTime.Now;
                     return Ok(dto.Key);
                 }
             }
-            return Ok(new ServerInfoDTO() { ip="", port=0 });
+            return Ok(new ServerIpDTO() { ip="", port=0 });
         }
 
         [HttpPost("Full")]
-        public ActionResult StillFull([FromBody] ServerInfoDTO serverInfoDTO)
+        public ActionResult StillFull([FromBody] ServerIpDTO serverInfoDTO)
         {
             if (ServerRegister.ContainsKey(serverInfoDTO))
             {
@@ -46,7 +50,7 @@ namespace GameServerRegister.Controllers
         }
 
         [HttpPost("Register")]
-        public ActionResult RegisterServer([FromBody]ServerInfoDTO serverInfoDTO)
+        public ActionResult RegisterServer([FromBody] ServerIpDTO serverInfoDTO)
         {
             if (ServerRegister.ContainsKey(serverInfoDTO))
             {
@@ -57,7 +61,7 @@ namespace GameServerRegister.Controllers
                 ServerRegister.Add(serverInfoDTO, DateTime.Now.AddMinutes(-1));
                 Console.WriteLine($"Gameserver with ip {serverInfoDTO.ip}:{serverInfoDTO.port} has been registered");
             }
-            return Ok($"Gameserver with ip {serverInfoDTO.ip}:{serverInfoDTO.port} has been registered");
+            return Ok("Gameserver has been registered");
         }
     }
 }

@@ -5,8 +5,8 @@ services:
   #  image: client
   #  build:
   #      dockerfile: Client/Dockerfile
-  GameserverRegister:
-    image: gameserver_register
+  gameserver_register:
+    image: gamegerver_register
     build:
         dockerfile: GameServerRegister/Dockerfile
     ports:
@@ -19,19 +19,19 @@ services:
     ports:
     - 13000:13000
     depends_on:
-    - GameserverRegister
+    - gameserver_register
   gameserver_two:
     image: game_service
     build:
         dockerfile: GameService/Dockerfile
     depends_on:
-    - GameserverRegister
+    - gameserver_register
   gameserver_tree:
     image: game_service
     build:
         dockerfile: GameService/Dockerfile
     depends_on:
-    - GameserverRegister
+    - gameserver_register
   #Login_api:
   #  image: login
   #  build:
