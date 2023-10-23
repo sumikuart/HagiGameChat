@@ -5,41 +5,53 @@ services:
   #  image: client
   #  build:
   #      dockerfile: Client/Dockerfile
-  GameserverRegister:
-    image: gameserver_register
+ # GameserverRegister:
+  #  image: gameserver_register
+ #   build:W
+ #       dockerfile: GameServerRegister/Dockerfile
+ #   ports:
+ #   - 8080:80
+ #   - 8081:443
+ # gameserver_one:
+ #   image: game_service
+  #  build:
+  #      dockerfile: GameService/Dockerfile
+ #   ports:
+ #   - 13000:13000
+ #   depends_on:
+ #   - GameserverRegister
+  #gameserver_two:
+  #  image: game_service
+ #   build:
+  #      dockerfile: GameService/Dockerfile
+  #  depends_on:
+  #  - GameserverRegister
+ # gameserver_tree:
+  #  image: game_service
+  #  build:
+  #      dockerfile: GameService/Dockerfile
+ #   depends_on:
+  #  - GameserverRegister
+  login_api:
+    image: login
     build:
-        dockerfile: GameServerRegister/Dockerfile
+     dockerfile: Login/Dockerfile
     ports:
     - 8080:80
     - 8081:443
-  gameserver_one:
-    image: game_service
-    build:
-        dockerfile: GameService/Dockerfile
-    ports:
-    - 13000:13000
-    depends_on:
-    - GameserverRegister
-  gameserver_two:
-    image: game_service
-    build:
-        dockerfile: GameService/Dockerfile
-    depends_on:
-    - GameserverRegister
-  gameserver_tree:
-    image: game_service
-    build:
-        dockerfile: GameService/Dockerfile
-    depends_on:
-    - GameserverRegister
-  #Login_api:
-  #  image: login
-  #  build:
-  #   dockerfile: Login/Dockerfile
+  #rabbitmq:
+  #  image: rabbitmq:management-alpine
   #  ports:
-  #  - 8080:80
-  #  - 8081:443
-  #session_service_api:
-  # image: session_service
-  # build:
-  #   dockerfile: SessionService/Dockerfile
+  #  - "15672:15672"
+  #  environment:
+  #  - RABBITMQ_DEFAULT_USER=Kim
+  #  - RABBITMQ_DEFAULT_PASS=Kim
+  session_service_api:
+   image: session_service
+   build:
+     dockerfile: SessionService/Dockerfile
+   ports:
+    - 8082:80
+    - 8083:443
+   #depends_on:
+   # - rabbitmq

@@ -6,10 +6,10 @@ using SessionService.Model;
 namespace SessionService.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[Action]")]
     public class SessionServiceController : ControllerBase
     {
- 
+
 
         private readonly ILogger<SessionServiceController> _logger;
 
@@ -18,60 +18,33 @@ namespace SessionService.Controllers
             _logger = logger;
         }
 
-        [HttpPost]
-        public ActionResult Post(string userName, bool Status)
+        [HttpGet("Login/{userName}")]
+        public ActionResult GetLogin(string userName)
         {
-        
-            bool suscces =  LogicFunctions.HandleOnlineList(userName, Status);
 
-            if(suscces)
+            (bool,bool) suscces = LogicFunctions.HandleOnlineList(userName);
+
+            if (suscces == (true, true))
             {
-                if (Status)
-                {
-                    return Ok(userName + " is now Online"); ;
-                } else
-                {
-                    return Ok(userName + " is now Offline");
-                }
+                return Ok(userName + " is now Online");
+            } else if (suscces == (true, false)) { 
+                 return Ok(userName + " is now Offline");
                 
-            }
-            else
+             } else
             {
-                return NotFound();
+                return NotFound("User Dont Exist");
             }
-         
+
         }
 
-        [HttpGet]
-        public ActionResult<string> Get()
-        {
-            return Ok("Connected");
-        }
-        
 
-            /*
-                [HttpGet]
-            public ActionResult<SessionUserDataDTO> Get(string userName)
+            [HttpGet("Data/{userName}")]
+            public ActionResult<string>Get(string userName)
             {
 
-                SessionUserDataDTO Result = LogicFunctions.GatherUserData(userName);
+                string Result = LogicFunctions.GatherUserData(userName);
 
-                if(Result != null)
-                {
-                    foreach (string name in DataHandler.OnlineUsers)
-                    {
-                        if (name == userName)
-                        {
-                            Result.Online = true;
-                            break;
-                        }
-                        else
-                        {
-                            Result.Online = false;
-                        }
-                    }
 
-                }
 
                 if (Result == null)
                 {
@@ -82,6 +55,6 @@ namespace SessionService.Controllers
                 }
 
             }
-            */
+            
         }
 }
