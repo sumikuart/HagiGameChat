@@ -58,12 +58,25 @@ namespace GameService
                 // Perform a blocking call to accept requests.
                 // You could also use server.AcceptSocket() here.
                 using TcpClient client = server.AcceptTcpClient();
+                _ = Task.Run(async () =>
+                {
+                    ServerIpDTO serverIpDTO = new ServerIpDTO() { ip = GetIPAddress(), port = 13000 };
+                    var JsonData = JsonSerializer.Serialize(serverIpDTO);
+                    StringContent content = new StringContent(JsonData, Encoding.UTF8, "application/json");
+                    while (client.Connected)
+                    {
+                        Thread.Sleep(5000);
+                        HttpResponseMessage response = await httpClient.PostAsync("api/GameServerReg/Full", content);
+                    }
+                });
                 Console.WriteLine("Connected!");
+                (int left, int top) currentPos = (0,0);
                 // Get a stream object for reading and writing
                 NetworkStream stream = client.GetStream();
                 int i;
                 while (client.Connected)
                 {
+                    Console.WriteLine("test");
                     data = null;
                     // Loop to receive all the data sent by the client.
                     while ((i = stream.Read(bytes, 0, bytes.Length)) != 0)
@@ -89,7 +102,12 @@ namespace GameService
                                     if(posString.Length == 2)
                                     {
                                         (int left, int top) pos = (Int32.Parse(posString[0]), Int32.Parse(posString[1]));
-                                        return_message = $"the server has accepted you request and moved you to {pos.left}, {pos.top}";
+                                        if(pos.left >= 0 && pos.top >= 0 && pos.left <= 10 && pos.top <= 10)
+                                        {
+                                            currentPos = pos;
+                                            return_message = $"the server has accepted you request and moved you to {currentPos.left}, {currentPos.top}";
+                                        }
+                                        return_message = $"the server has denied you request to move to {pos.left}, {pos.top}, you can only move within the range 0 to 10 /n your still at {currentPos.left}, {currentPos.top}";
                                     }
                                     break;
                                 case "private":
