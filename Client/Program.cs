@@ -1,20 +1,42 @@
 ﻿using System.Net.Sockets;
 using System.Net;
 using System.Text;
+using System.Text.Json;
 
 namespace Client
 {
     internal class Program
     {
+        public static HttpClient SetupHttpClient()
+        {
+            HttpClient client = new HttpClient();
+            client.BaseAddress = new Uri("http://GameserverRegister");
+            client.Timeout = TimeSpan.FromSeconds(5);
 
-        static void Main(string[] args)
+            return client;
+        }
+
+        static async Task Main(string[] args)
         {
           
     
             Console.Write("Enter username: ");
             string username = Console.ReadLine();
-            startClient(username, "localhost", 13000);
-          
+            HttpClient client = SetupHttpClient();
+            HttpResponseMessage message = await client.GetAsync("api/GameServerReg/GetServer");
+            if(message.IsSuccessStatusCode)
+            {
+                string content = await message.Content.ReadAsStringAsync();
+                ServerIpDTO serverIp = JsonSerializer.Deserialize<ServerIpDTO>(content);
+                if(serverIp.ip != "")
+                {
+                    startClient(username, serverIp.ip, serverIp.port);
+                }
+                else
+                {
+                    Console.WriteLine("No open Servers");
+                }
+            } else { Console.WriteLine("something wrong"); }
         }
 
 
