@@ -37,10 +37,11 @@ namespace GameServerRegister.Controllers
         [HttpPost("Full")]
         public ActionResult StillFull([FromBody] ServerIpDTO serverInfoDTO)
         {
-            if (ServerRegister.ContainsKey(serverInfoDTO))
+            serverInfoDTO = ServerRegister.Keys.DistinctBy(other => other.ip == serverInfoDTO.ip && other.port == serverInfoDTO.port).FirstOrDefault();
+            if (serverInfoDTO != null)
             {
                 ServerRegister[serverInfoDTO] = DateTime.Now;
-                Console.WriteLine($"Gameserver with ip {serverInfoDTO.ip}:{serverInfoDTO.port} is still occupied, updating timestamp");
+                //Console.WriteLine($"Gameserver with ip {serverInfoDTO.ip}:{serverInfoDTO.port} is still occupied, updating timestamp");
                 return Ok($"Gameserver with ip {serverInfoDTO.ip}:{serverInfoDTO.port} is still occupied, updating timestamp");
             }
             else

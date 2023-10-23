@@ -1,10 +1,15 @@
 version: '3.8'
 
 services:
-  #client:
-  #  image: client
-  #  build:
-  #      dockerfile: Client/Dockerfile
+  # client:
+  #   image: client
+  #   build:
+  #     dockerfile: Client/Dockerfile
+  #   depends_on:
+  #   - GameserverRegister
+  #   - gameserver_one
+  #   - gameserver_two
+  #   - gameserver_tree
   GameserverRegister:
     image: gameserver_register
     build:
@@ -18,28 +23,38 @@ services:
         dockerfile: GameService/Dockerfile
     ports:
     - 13000:13000
+    environment:
+    - PORT=13000
     depends_on:
     - GameserverRegister
   gameserver_two:
     image: game_service
     build:
         dockerfile: GameService/Dockerfile
+    ports:
+    - 13001:13001
+    environment:
+    - PORT=13001
     depends_on:
     - GameserverRegister
   gameserver_tree:
     image: game_service
     build:
         dockerfile: GameService/Dockerfile
+    ports:
+    - 13002:13002
+    environment:
+    - PORT=13002
     depends_on:
     - GameserverRegister
-  #Login_api:
-  #  image: login
-  #  build:
-  #   dockerfile: Login/Dockerfile
-  #  ports:
-  #  - 8080:80
-  #  - 8081:443
-  #session_service_api:
-  # image: session_service
-  # build:
-  #   dockerfile: SessionService/Dockerfile
+  # Login_api:
+  #   image: login
+  #   build:
+  #     dockerfile: Login/Dockerfile
+  #   ports:
+  #   - 8080:80
+  #   - 8081:443
+  # session_service_api:
+  #   image: session_service
+  #   build:
+  #     dockerfile: SessionService/Dockerfile
