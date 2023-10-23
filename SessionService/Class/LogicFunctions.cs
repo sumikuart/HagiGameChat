@@ -4,6 +4,10 @@ using SessionService.Data;
 using SessionService.Model;
 using System.Text;
 using System.Threading.Tasks;
+using System.Text.Json.Serialization;
+using System.Text.Json;
+using System.Net.Http.Json;
+
 
 namespace SessionService.Class
 {
@@ -11,24 +15,22 @@ namespace SessionService.Class
     {
 
 
-        public static string GatherUserData(string userData)
+        public static SessionUserDataDTO GatherUserData(string userData)
         {
                
-           Task<string> task = null;
+           Task<SessionUserDataDTO> task = null;
           
             task = GatherUserDataFromLogin(userData);
 
             task.Wait();
+ 
 
-
-
-            string result = task.Result;
-            return result;
+            return task.Result;
         }
 
 
 
-        public async static Task<string> GatherUserDataFromLogin(string userData)
+        public async static Task<SessionUserDataDTO> GatherUserDataFromLogin(string userData)
         {
 
             SessionUserDataDTO newData = new SessionUserDataDTO();
@@ -50,16 +52,34 @@ namespace SessionService.Class
 
             if (response.IsSuccessStatusCode)
             {
-                result += await response.Content.ReadAsStringAsync();
+                result = await response.Content.ReadAsStringAsync();
 
             }
             else
             {
-                result += response.ToString();
+                result = response.ToString();
+            }
+
+            SessionUserDataDTO SessionUserResult = new SessionUserDataDTO();
+
+            UserDTO FormatedResult = JsonSerializer.Deserialize<UserDTO>(result);
+
+       ;
+            SessionUserResult.Rank = FormatedResult.role;
+            SessionUserResult.Guild = FormatedResult.guild;
+            SessionUserResult.Online = false;
+
+            foreach (string user in DataHandler.OnlineUsers)
+            {
+                if (user == FormatedResult.userName)
+                {
+                    SessionUserResult.Online = true;
+                }
             }
 
 
-            return result;
+
+            return SessionUserResult;
 
 
 

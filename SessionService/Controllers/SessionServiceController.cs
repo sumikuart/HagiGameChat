@@ -39,10 +39,10 @@ namespace SessionService.Controllers
 
 
             [HttpGet("Data/{userName}")]
-            public ActionResult<string>Get(string userName)
+            public ActionResult<SessionUserDataDTO> Get(string userName)
             {
 
-                string Result = LogicFunctions.GatherUserData(userName);
+            SessionUserDataDTO Result = LogicFunctions.GatherUserData(userName);
 
 
 
@@ -55,6 +55,18 @@ namespace SessionService.Controllers
                 }
 
             }
+
+        [HttpGet("OnlineUsers")]
+        public ActionResult<List<string>> GetAllOnlineUsers()
+        {
+
+      
+
+     
+                return Ok(DataHandler.OnlineUsers);
             
+
         }
+
+    }
 }
