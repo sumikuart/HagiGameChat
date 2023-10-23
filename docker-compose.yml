@@ -1,19 +1,19 @@
 version: '3.8'
 
 services:
-  # client:
-  #   image: client
-  #   build:
-  #     dockerfile: Client/Dockerfile
-  #   depends_on:
-  #   - GameserverRegister
-  #   - gameserver_one
-  #   - gameserver_two
-  #   - gameserver_tree
+  client:
+    image: client
+    build:
+      dockerfile: Client/Dockerfile
+    depends_on:
+    - GameserverRegister
+    - gameserver_one
+    - gameserver_two
+    - gameserver_tree
   GameserverRegister:
     image: gameserver_register
     build:
-        dockerfile: GameServerRegister/Dockerfile
+      dockerfile: GameServerRegister/Dockerfile
     ports:
     - 8080:80
     - 8081:443
@@ -47,14 +47,26 @@ services:
     - PORT=13002
     depends_on:
     - GameserverRegister
-  # Login_api:
-  #   image: login
-  #   build:
-  #     dockerfile: Login/Dockerfile
-  #   ports:
-  #   - 8080:80
-  #   - 8081:443
-  # session_service_api:
-  #   image: session_service
-  #   build:
-  #     dockerfile: SessionService/Dockerfile
+  Login_api:
+    image: login
+    build:
+      dockerfile: Login/Dockerfile
+    ports:
+    - 8080:80
+    - 8081:443
+  rabbitmq:
+    image: rabbitmq:management-alpine
+    ports:
+    - 15672:15672
+    environment:
+    - RABBITMQ_DEFAULT_USER=Kim
+    - RABBITMQ_DEFAULT_PASS=Kim
+  session_service_api:
+    image: session_service
+    build:
+      dockerfile: SessionService/Dockerfile
+    ports:
+    - 8082:80
+    - 8083:443
+    depends_on:
+    - rabbitmq

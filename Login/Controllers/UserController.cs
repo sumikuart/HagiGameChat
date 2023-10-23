@@ -12,7 +12,7 @@ using System.Text;
 namespace Login.Controllers
 {
     [ApiController]
-    [Route("[controller]/[action]")]
+    [Route("api/[controller]/[action]")]
 
     public class UserController : ControllerBase
     {
@@ -44,7 +44,10 @@ namespace Login.Controllers
                     }
                     else
                     {
-                        //LogicFunctions.UpdateDataOnSessionService(user);
+                        UserDto selecterUser = new UserDto();
+                        selecterUser.UserName = user.UserName;
+                        selecterUser.Password = loginData.Password;
+                        string reqResult = LogicFunctions.RequestToSessionService(selecterUser,APIRequestType.login);
                         string token = CreateWebToken(user);
                         return Ok(token);
                     }
@@ -56,33 +59,48 @@ namespace Login.Controllers
         }
         
 
-        [HttpGet]
+        [HttpGet("{name}")]
         public ActionResult<User> GetUserData(string name)
         {
+            /*
+            UserDto selectedUser = null;
+            foreach (UserDto user in DataHandler.DtoUserList)
+            {
+                if (user.UserName == name)
+                {
+                    
+                        selectedUser = user;
+
+                        return Ok(LogicFunctions.RequestToSessionService(selectedUser,APIRequestType.Data));
+                    
+                }
+            }
+            */
             User selectedUser = null;
 
             foreach (User user in DataHandler.UserList)
             {
                 if (user.UserName == name)
                 {
-                    
-                        selectedUser = user;
-                        return Ok(selectedUser);
-                    
+
+                    selectedUser = user;
+
+                    return Ok(selectedUser);
+
                 }
             }
 
-            return NotFound();
+            return NotFound("User Dont Exist");
 
         }
 
 
         [HttpGet]
-        public ActionResult<string> GetAllUsers()
+        public ActionResult<List<UserDto>> GetAllUsers()
         {
 
             //LogicFunctions.UpdateDataOnSessionService();
-            return Ok(LogicFunctions.UpdateDataOnSessionService());
+            return Ok(DataHandler.DtoUserList);
 
         
       

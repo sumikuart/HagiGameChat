@@ -28,8 +28,8 @@ namespace SessionService
 
             app.UseAuthorization();
 
- 
 
+            //ConnectionManager.CreateRabbitConnection();
      
 
             app.MapControllers();

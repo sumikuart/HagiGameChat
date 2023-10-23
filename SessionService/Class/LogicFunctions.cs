@@ -1,28 +1,88 @@
-﻿using SessionService.Data;
+﻿using RabbitMQ.Client.Events;
+using RabbitMQ.Client;
+using SessionService.Data;
 using SessionService.Model;
+using System.Text;
+using System.Threading.Tasks;
+using System.Text.Json.Serialization;
+using System.Text.Json;
+using System.Net.Http.Json;
+
 
 namespace SessionService.Class
 {
     public static class LogicFunctions
     {
 
+
         public static SessionUserDataDTO GatherUserData(string userData)
+        {
+               
+           Task<SessionUserDataDTO> task = null;
+          
+            task = GatherUserDataFromLogin(userData);
+
+            task.Wait();
+ 
+
+            return task.Result;
+        }
+
+
+
+        public async static Task<SessionUserDataDTO> GatherUserDataFromLogin(string userData)
         {
 
             SessionUserDataDTO newData = new SessionUserDataDTO();
+            HttpClientHandler handler = new HttpClientHandler()
+            {
+                UseDefaultCredentials = true
+            };
 
-            //To be made
-            if (true)
+
+
+            string baseUrl = "http://login_api:80/api/";
+            string PropUrl = "GetUserData/" + userData;
+            string extendenUrl = baseUrl + "User/" + PropUrl;
+            string result = "Req URL: " + extendenUrl + " - ";
+
+            HttpClient client = new HttpClient(handler);
+            HttpResponseMessage response = await client.GetAsync(extendenUrl);
+
+
+            if (response.IsSuccessStatusCode)
             {
-                newData.Guild = "TBD";
-                newData.Rank = "TBD";
-                return newData;
-            } else
-            {
-                newData.Guild = "Error";
-                newData.Rank = "Error";
-                return null;
+                result = await response.Content.ReadAsStringAsync();
+
             }
+            else
+            {
+                result = response.ToString();
+            }
+
+            SessionUserDataDTO SessionUserResult = new SessionUserDataDTO();
+
+            UserDTO FormatedResult = JsonSerializer.Deserialize<UserDTO>(result);
+
+       ;
+            SessionUserResult.Rank = FormatedResult.role;
+            SessionUserResult.Guild = FormatedResult.guild;
+            SessionUserResult.Online = false;
+
+            foreach (string user in DataHandler.OnlineUsers)
+            {
+                if (user == FormatedResult.userName)
+                {
+                    SessionUserResult.Online = true;
+                }
+            }
+
+
+
+            return SessionUserResult;
+
+
+
 
         
 
@@ -30,37 +90,23 @@ namespace SessionService.Class
         }
 
 
-        public static bool HandleOnlineList(string UserNamer, bool newStatus)
+        public static (bool,bool) HandleOnlineList(string UserNamer)
         {
 
 
-            if (newStatus == true)
-            {
-                if (DataHandler.OnlineUsers.Contains(UserNamer))
-                {
-
-                }
-                else
-                {
-                    DataHandler.OnlineUsers.Add(UserNamer);
-                    return true;
-                }
-
-            }
-            else
-            {
+          
                 if (DataHandler.OnlineUsers.Contains(UserNamer))
                 {
                     DataHandler.OnlineUsers.Remove(UserNamer);
-                    return true;
-                }
+                    return (true,false);
+               }
                 else
                 {
-
+                    DataHandler.OnlineUsers.Add(UserNamer);
+                    return (true,true);
                 }
-            }
 
-            return false;
+            return (false,false);
 
         }
 
