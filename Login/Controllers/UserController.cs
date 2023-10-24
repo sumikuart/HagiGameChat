@@ -62,20 +62,7 @@ namespace Login.Controllers
         [HttpGet("{name}")]
         public ActionResult<User> GetUserData(string name)
         {
-            /*
-            UserDto selectedUser = null;
-            foreach (UserDto user in DataHandler.DtoUserList)
-            {
-                if (user.UserName == name)
-                {
-                    
-                        selectedUser = user;
 
-                        return Ok(LogicFunctions.RequestToSessionService(selectedUser,APIRequestType.Data));
-                    
-                }
-            }
-            */
             User selectedUser = null;
 
             foreach (User user in DataHandler.UserList)
