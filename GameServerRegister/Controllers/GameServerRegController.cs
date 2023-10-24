@@ -21,6 +21,7 @@ namespace GameServerRegister.Controllers
         [HttpGet("GetServer")]
         public async Task<ActionResult<ServerIpDTO>> GetServer()
         {
+            Console.WriteLine($"Server registered count: {ServerRegister.Count}");
             foreach (var dto in ServerRegister)
             {
                 Console.WriteLine($"ip: {dto.Key.ip}:{dto.Key.port}, at time: {dto.Value}");
@@ -53,10 +54,11 @@ namespace GameServerRegister.Controllers
         [HttpPost("Register")]
         public ActionResult RegisterServer([FromBody] ServerIpDTO serverInfoDTO)
         {
-            if (ServerRegister.ContainsKey(serverInfoDTO))
+            ServerIpDTO serverInfoDTOExsist = ServerRegister.Keys.DistinctBy(other => other.ip == serverInfoDTO.ip && other.port == serverInfoDTO.port).FirstOrDefault();
+            if (serverInfoDTOExsist != null)
             {
-                ServerRegister[serverInfoDTO] = DateTime.Now.AddMinutes(-1);
-                Console.WriteLine($"Gameserver with ip {serverInfoDTO.ip}:{serverInfoDTO.port} already exsists, but has been marked as potentiely open");
+                ServerRegister[serverInfoDTOExsist] = DateTime.Now.AddMinutes(-1);
+                Console.WriteLine($"Gameserver with ip {serverInfoDTOExsist.ip}:{serverInfoDTOExsist.port} already exsists, but has been marked as potentiely open");
             } else
             {
                 ServerRegister.Add(serverInfoDTO, DateTime.Now.AddMinutes(-1));

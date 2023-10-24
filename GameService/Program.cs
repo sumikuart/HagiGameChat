@@ -32,7 +32,8 @@ namespace GameService
 
         public static async Task Main(string[] args)
         {
-            while(true) {
+            while (true)
+            {
                 TcpListener server = null;
                 string CurrentUsername = "default";
                 try
@@ -67,89 +68,89 @@ namespace GameService
                         StringContent content = new StringContent(JsonData, Encoding.UTF8, "application/json");
                         while (client.Connected)
                         {
-                            Thread.Sleep(5000);
                             HttpResponseMessage response = await httpClient.PostAsync("api/GameServerReg/Full", content);
                             if (response.IsSuccessStatusCode)
                             {
                                 Console.WriteLine(await response.Content.ReadAsStringAsync());
                             }
+                            Thread.Sleep(5000);
                         }
+                        Console.WriteLine("i have stopped, my loop informing that im full");
                     });
                     Console.WriteLine("Connected!");
                     (int left, int top) currentPos = (0, 0);
                     // Get a stream object for reading and writing
                     NetworkStream stream = client.GetStream();
                     int i;
-                    while (client.Connected)
+
+                    data = null;
+                    // Loop to receive all the data sent by the client.
+                    while ((i = stream.Read(bytes, 0, bytes.Length)) != 0)
                     {
-                        data = null;
-                        // Loop to receive all the data sent by the client.
-                        while ((i = stream.Read(bytes, 0, bytes.Length)) != 0)
+                        // Translate data bytes to a ASCII string.
+                        data = System.Text.Encoding.ASCII.GetString(bytes, 0, i);
+                        Console.WriteLine("Received: {0}", data);
+
+                        // Process the data sent by the client.
+                        string message;
+                        string return_message = "No such Command exsist or you missing a argument";
+                        string[] line = data.Split(' ', 2);
+                        if (line.Length == 2)
                         {
-                            // Translate data bytes to a ASCII string.
-                            data = System.Text.Encoding.ASCII.GetString(bytes, 0, i);
-                            Console.WriteLine("Received: {0}", data);
-
-                            // Process the data sent by the client.
-                            string message;
-                            string return_message = "No such Command exsist or you missing a argument";
-                            string[] line = data.Split(' ', 2);
-                            if (line.Length == 2)
+                            switch (line[0])
                             {
-                                switch (line[0])
-                                {
-                                    case "login":
-                                        CurrentUsername = line[1];
-                                        return_message = $"you have succesfully logged on to the server";
-                                        break;
+                                case "login":
+                                    CurrentUsername = line[1];
+                                    return_message = $"you have succesfully logged on to the server";
+                                    break;
 
-                                    case "pos":
-                                        string[] posString = line[1].Split(' ', 2);
-                                        if (posString.Length == 2)
+                                case "pos":
+                                    string[] posString = line[1].Split(' ', 2);
+                                    if (posString.Length == 2)
+                                    {
+                                        (int left, int top) pos = (Int32.Parse(posString[0]), Int32.Parse(posString[1]));
+                                        if (pos.left >= 0 && pos.top >= 0 && pos.left <= 10 && pos.top <= 10)
                                         {
-                                            (int left, int top) pos = (Int32.Parse(posString[0]), Int32.Parse(posString[1]));
-                                            if (pos.left >= 0 && pos.top >= 0 && pos.left <= 10 && pos.top <= 10)
-                                            {
-                                                currentPos = pos;
-                                                return_message = $"the server has accepted you request and moved you to {currentPos.left}, {currentPos.top}";
-                                            }
-                                            return_message = $"the server has denied you request to move to {pos.left}, {pos.top}, you can only move within the range 0 to 10 /n your still at {currentPos.left}, {currentPos.top}";
+                                            currentPos = pos;
+                                            return_message = $"the server has accepted you request and moved you to {currentPos.left}, {currentPos.top}";
                                         }
-                                        break;
+                                        return_message = $"the server has denied you request to move to {pos.left}, {pos.top}, you can only move within the range 0 to 10 /n your still at {currentPos.left}, {currentPos.top}";
+                                    }
+                                    break;
 
-                                    case "private":
-                                        string[] UserMessage = line[1].Split(' ', 2);
-                                        if (UserMessage.Length == 2)
-                                        {
-                                            string username = UserMessage[0];
-                                            message = UserMessage[1];
-                                            return_message = $"{CurrentUsername}->{username}: {message}";
-                                        }
-                                        break;
+                                case "private":
+                                    string[] UserMessage = line[1].Split(' ', 2);
+                                    if (UserMessage.Length == 2)
+                                    {
+                                        string username = UserMessage[0];
+                                        message = UserMessage[1];
+                                        return_message = $"{CurrentUsername}->{username}: {message}";
+                                    }
+                                    break;
 
-                                    case "guild":
-                                        string[] GuildMessage = line[1].Split(' ', 2);
-                                        if (GuildMessage.Length == 2)
-                                        {
-                                            string guildName = GuildMessage[0];
-                                            message = GuildMessage[1];
-                                            return_message = $"[{guildName}]{CurrentUsername}: {message}";
-                                        }
-                                        break;
+                                case "guild":
+                                    string[] GuildMessage = line[1].Split(' ', 2);
+                                    if (GuildMessage.Length == 2)
+                                    {
+                                        string guildName = GuildMessage[0];
+                                        message = GuildMessage[1];
+                                        return_message = $"[{guildName}]{CurrentUsername}: {message}";
+                                    }
+                                    break;
 
-                                    case "global":
-                                        message = line[1];
-                                        return_message = $"Global message: {message}";
-                                        break;
-                                }
+                                case "global":
+                                    message = line[1];
+                                    return_message = $"Global message: {message}";
+                                    break;
                             }
-                            byte[] msg = System.Text.Encoding.ASCII.GetBytes(return_message);
-
-                            // Send back a response.
-                            stream.Write(msg, 0, msg.Length);
-                            Console.WriteLine("Sent: {0}", data);
                         }
+                        byte[] msg = System.Text.Encoding.ASCII.GetBytes(return_message);
+
+                        // Send back a response.
+                        stream.Write(msg, 0, msg.Length);
+                        Console.WriteLine("Sent: {0}", data);
                     }
+                    Console.WriteLine("stream stopped reading");
                 }
                 catch (SocketException e)
                 {
@@ -157,6 +158,7 @@ namespace GameService
                 }
                 finally
                 {
+                    Console.WriteLine("i have stopped, and is gonna restart");
                     server.Stop();
                 }
             }
