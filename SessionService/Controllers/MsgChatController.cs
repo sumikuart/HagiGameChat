@@ -1,19 +1,31 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using SessionService.Class;
+using SessionService.Data;
 using SessionService.Interface;
+using SessionService.Model;
+using System.Linq;
 
 namespace SessionService.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     public class MsgChatController : ControllerBase
     {
         private readonly IMessageProducer _messagePublisher = new RabbitMQProducer();
-        public MsgChatController(RabbitMQProducer messagePublisher)
+        private readonly ILogger<MsgChatController> _logger;
+        private readonly IConfiguration _configuration;
+
+ 
+        public MsgChatController(ILogger<MsgChatController> logger, IConfiguration config)
         {
-            _messagePublisher = messagePublisher;
+            _logger = logger;
+            _configuration = config;
         }
+
         [HttpGet]
         public ActionResult<string> Get()
         {
@@ -21,30 +33,46 @@ namespace SessionService.Controllers
         }
 
 
-        [HttpPost]
-        [Route("PrivateMSG")]
-        public async Task<ActionResult> SendPrivateMessage([FromBody] string message)
+        [HttpPost("PrivateMSG")]
+        public ActionResult<string> SendPrivateMessage(MessageForm form)
         {
-            _messagePublisher.SendMessage(message);
-            return Ok();
+          
+            if (DataHandler.OnlineUsers.Contains(form.Target))
+            {
+                return Ok("Private msg to :" + form.Target + " - " + form.Message);
+            }
+            else
+            {
+                bool userExist = LogicFunctions.UserOnlineData(form.Target);
+
+                if (userExist)
+                {
+                    return Ok(form.Target + " Is Offline");
+                } else
+                {
+                    return NotFound(form.Target + " Dont Exist");
+                }
+           
+            }
+                 
         }
 
 
         [HttpPost]
         [Route("GuildMSG")]
-        public async Task<ActionResult> SendGuildMessage([FromBody] string message)
+        public ActionResult<string> SendGuildMessage(MessageForm form)
         {
-            _messagePublisher.SendMessage(message);
-            return Ok();
+
+            return Ok("Guild Message from " + form.User + ": " + form.Message); 
         }
 
 
         [HttpPost]
-        [Route("PublicMSG")]
-        public async Task<ActionResult> SendPublicMessage([FromBody] string message)
+        [Route("PublicMSG"), Authorize(Roles = "Admin")]
+        public ActionResult<string> SendPublicMessage(string message)
         {
-            _messagePublisher.SendMessage(message);
-            return Ok();
+
+            return Ok("Global: " + message);
         }
     }
 }

@@ -21,16 +21,36 @@ namespace SessionService.Class
            Task<SessionUserDataDTO> task = null;
           
             task = GatherUserDataFromLogin(userData);
-
             task.Wait();
  
 
             return task.Result;
         }
 
+        public static bool UserOnlineData(string userData)
+        {
 
+            Task<UserDTO> task = null;
 
-        public async static Task<SessionUserDataDTO> GatherUserDataFromLogin(string userData)
+            task = CheckUserInLogin(userData);
+            task.Wait();
+
+            bool userExcist = false;
+
+            if (task.Result != null)
+            {
+                userExcist = true;
+            } else
+            {
+                userExcist = false;
+            }
+
+      
+
+            return userExcist;
+        }
+
+        public async static Task<UserDTO> CheckUserInLogin(string userName)
         {
 
             SessionUserDataDTO newData = new SessionUserDataDTO();
@@ -42,7 +62,48 @@ namespace SessionService.Class
 
 
             string baseUrl = "http://login_api:80/api/";
-            string PropUrl = "GetUserData/" + userData;
+            string PropUrl = "GetUserData/" + userName;
+            string extendenUrl = baseUrl + "User/" + PropUrl;
+            string result = "Req URL: " + extendenUrl + " - ";
+
+            HttpClient client = new HttpClient(handler);
+            HttpResponseMessage response = await client.GetAsync(extendenUrl);
+
+            UserDTO FormatedResult = null;
+
+            if (response.IsSuccessStatusCode)
+            {
+                result = await response.Content.ReadAsStringAsync();
+                FormatedResult = JsonSerializer.Deserialize<UserDTO>(result);
+            }
+            else
+            {
+                result = response.ToString();
+            }
+
+            
+
+          
+
+          
+
+            return FormatedResult;
+
+        }
+
+        public async static Task<SessionUserDataDTO> GatherUserDataFromLogin(string userName)
+        {
+
+            SessionUserDataDTO newData = new SessionUserDataDTO();
+            HttpClientHandler handler = new HttpClientHandler()
+            {
+                UseDefaultCredentials = true
+            };
+
+
+
+            string baseUrl = "http://login_api:80/api/";
+            string PropUrl = "GetUserData/" + userName;
             string extendenUrl = baseUrl + "User/" + PropUrl;
             string result = "Req URL: " + extendenUrl + " - ";
 

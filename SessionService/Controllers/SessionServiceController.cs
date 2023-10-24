@@ -32,6 +32,7 @@ namespace SessionService.Controllers
                 
              } else
             {
+
                 return NotFound("User Dont Exist");
             }
 
