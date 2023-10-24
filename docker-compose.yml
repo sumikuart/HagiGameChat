@@ -1,15 +1,15 @@
 version: '3.8'
 
 services:
-  client:
-    image: client
-    build:
-      dockerfile: Client/Dockerfile
-    depends_on:
-    - GameserverRegister
-    - gameserver_one
-    - gameserver_two
-    - gameserver_tree
+  # client:
+  #   image: client
+  #   build:
+  #     dockerfile: Client/Dockerfile
+  #   depends_on:
+  #   - GameserverRegister
+  #   - gameserver_one
+  #   - gameserver_two
+  #   - gameserver_tree
   GameserverRegister:
     image: gameserver_register
     build:
@@ -52,8 +52,8 @@ services:
     build:
       dockerfile: Login/Dockerfile
     ports:
-    - 8080:80
-    - 8081:443
+    - 8084:80
+    - 8085:443
   rabbitmq:
     image: rabbitmq:management-alpine
     ports:

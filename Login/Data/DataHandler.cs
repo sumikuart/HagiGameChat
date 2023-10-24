@@ -28,8 +28,8 @@ namespace Login.Data
             UserDto UserB = new UserDto()
             {
 
-                UserName = "Mahtias",
-                Password = "Mahtias",
+                UserName = "Mathias",
+                Password = "Mathias",
                 Guild = guilds[0],
                 Role = roles[1]
             };
