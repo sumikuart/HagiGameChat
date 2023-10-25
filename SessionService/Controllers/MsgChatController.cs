@@ -5,7 +5,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using SessionService.Class;
 using SessionService.Data;
-using SessionService.Interface;
 using SessionService.Model;
 using System.Linq;
 
@@ -15,7 +14,7 @@ namespace SessionService.Controllers
     [Route("api/[controller]/[action]")]
     public class MsgChatController : ControllerBase
     {
-        private readonly IMessageProducer _messagePublisher = new RabbitMQProducer();
+
         private readonly ILogger<MsgChatController> _logger;
         private readonly IConfiguration _configuration;
 
@@ -39,7 +38,7 @@ namespace SessionService.Controllers
           
             if (DataHandler.OnlineUsers.Contains(form.Target))
             {
-                ConnectionManager.ProduceMsg(form.Message);
+                ConnectionManager.ProducePrivateMsg(form.Message, form.Target);
                 return Ok("Private msg to :" + form.Target + " - " + form.Message);
             }
             else
