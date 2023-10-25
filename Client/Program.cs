@@ -1,4 +1,5 @@
-﻿using System.Net.Sockets;
+﻿using System.Net.Http.Headers;
+using System.Net.Sockets;
 using System.Text;
 using System.Text.Json;
 
@@ -37,7 +38,8 @@ namespace Client
                 string JWT = await login_message.Content.ReadAsStringAsync();
                 // HttpClient client = SetupHttpClient("http://GameserverRegister");
                 HttpClient client = SetupHttpClient("http://localhost:8080");
-                //client.DefaultRequestHeaders.Add("Authorization", "Bearer " + JWT);
+                //client.DefaultRequestHeaders.Add("Authorization", "bearer " + JWT);
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", JWT);
                 HttpResponseMessage message = await client.GetAsync("api/GameServerReg/GetServer");
                 if (message.IsSuccessStatusCode)
                 {
