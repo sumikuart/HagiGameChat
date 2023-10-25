@@ -55,16 +55,18 @@ namespace GameServerRegister.Controllers
         [HttpPost("Register")]
         public ActionResult RegisterServer([FromBody] ServerIpDTO serverInfoDTO)
         {
-            ServerIpDTO serverInfoDTOExsist = ServerRegister.Keys.DistinctBy(other => other.ip == serverInfoDTO.ip && other.port == serverInfoDTO.port).FirstOrDefault();
-            if (serverInfoDTOExsist != null)
+            Console.WriteLine($"recieved reqeust from: {serverInfoDTO.ip}:{serverInfoDTO.port}");
+            foreach(ServerIpDTO server in ServerRegister.Keys)
             {
-                ServerRegister[serverInfoDTOExsist] = DateTime.Now.AddMinutes(-1);
-                Console.WriteLine($"Gameserver with ip {serverInfoDTOExsist.ip}:{serverInfoDTOExsist.port} already exsists, but has been marked as potentiely open");
-            } else
-            {
-                ServerRegister.Add(serverInfoDTO, DateTime.Now.AddMinutes(-1));
-                Console.WriteLine($"Gameserver with ip {serverInfoDTO.ip}:{serverInfoDTO.port} has been registered");
+                if(server.ip == serverInfoDTO.ip && server.port == serverInfoDTO.port)
+                {
+                    ServerRegister[server] = DateTime.Now.AddMinutes(-1);
+                    Console.WriteLine($"Gameserver with ip {server.ip}:{server.port} already exsists, but has been marked as potentiely open");
+                    return Ok("Gameserver has been registered");
+                }
             }
+            ServerRegister.Add(serverInfoDTO, DateTime.Now.AddMinutes(-1));
+            Console.WriteLine($"Gameserver with ip {serverInfoDTO.ip}:{serverInfoDTO.port} has been registered");
             return Ok("Gameserver has been registered");
         }
     }

@@ -69,10 +69,10 @@ namespace SessionService.Controllers
 
         [HttpPost]
         [Route("PublicMSG"), Authorize(Roles = "Admin")]
-        public ActionResult<string> SendPublicMessage(string message)
+        public ActionResult<string> SendPublicMessage(MessageForm form)
         {
-            ConnectionManager.ProducePublicMsg(message);
-            return Ok("Global: " + message);
+            ConnectionManager.ProducePublicMsg(form.Message);
+            return Ok("Global: " + form.Message);
         }
     }
 }

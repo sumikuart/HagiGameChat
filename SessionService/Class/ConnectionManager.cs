@@ -20,9 +20,9 @@ namespace SessionService.Class
             using (var connection = Factory.CreateConnection())
             using (var channel = connection.CreateModel())
             {
-                   string routingKey = "*." + target;        
+                   string routingKey = target;        
                    var exchange = "MsgExchanger";
-                   channel.ExchangeDeclare(exchange: exchange, type: ExchangeType.Topic);         
+                   channel.ExchangeDeclare(exchange: exchange, type: ExchangeType.Topic, autoDelete: false);         
                    SendMessage(msg, channel, exchange, routingKey);
                     
 
@@ -36,9 +36,9 @@ namespace SessionService.Class
             using (var channel = connection.CreateModel())
             {
 
-                string routingKey = target + ".*";
+                string routingKey = target;
                 var exchange = "MsgExchanger";
-                channel.ExchangeDeclare(exchange: exchange, type: ExchangeType.Topic);
+                channel.ExchangeDeclare(exchange: exchange, type: ExchangeType.Topic, autoDelete: false);
 
 
                 SendMessage(msg, channel, exchange, routingKey);             
@@ -55,14 +55,12 @@ namespace SessionService.Class
             {
 
              
-                var exchange = "MsgExchanger";
-                channel.ExchangeDeclare(exchange: exchange, type: ExchangeType.Topic);
+                var exchange = "MsgExchangerGlobal";
+                channel.ExchangeDeclare(exchange: exchange, type: ExchangeType.Fanout, autoDelete: false);
 
 
-                //SendMessage(msg, channel, exchange, routingKey);
-
+                SendMessage(msg, channel, exchange, "");
             }
-
         }
 
         public static void SendMessage(string msg, IModel channel, string exchange, string routeingKey)

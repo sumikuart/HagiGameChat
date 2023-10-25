@@ -37,6 +37,7 @@ services:
     - PORT=13001
     depends_on:
     - GameserverRegister
+    - gameserver_one
   gameserver_tree:
     image: game_service
     build:
@@ -47,6 +48,7 @@ services:
     - PORT=13002
     depends_on:
     - GameserverRegister
+    - gameserver_two
   Login_api:
     image: login
     build:
