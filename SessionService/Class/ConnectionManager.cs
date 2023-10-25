@@ -41,8 +41,25 @@ namespace SessionService.Class
                 channel.ExchangeDeclare(exchange: exchange, type: ExchangeType.Topic);
 
 
-                SendMessage(msg, channel, exchange, routingKey);
-               
+                SendMessage(msg, channel, exchange, routingKey);             
+
+            }
+
+        }
+
+        public static void ProducePublicMsg(string msg)
+        {
+            var Factory = new ConnectionFactory() { HostName = "rabbitmq", UserName = "Kim", Password = "Kim" };
+            using (var connection = Factory.CreateConnection())
+            using (var channel = connection.CreateModel())
+            {
+
+             
+                var exchange = "MsgExchanger";
+                channel.ExchangeDeclare(exchange: exchange, type: ExchangeType.Topic);
+
+
+                //SendMessage(msg, channel, exchange, routingKey);
 
             }
 

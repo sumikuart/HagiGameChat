@@ -62,7 +62,7 @@ namespace SessionService.Controllers
         [Route("GuildMSG"), Authorize(Roles = "Admin, User")]
         public ActionResult<string> SendGuildMessage(MessageForm form)
         {
-
+            ConnectionManager.ProduceGuildMsg(form.Message, form.Target);
             return Ok("Guild Message from " + form.User + ": " + form.Message); 
         }
 
@@ -71,7 +71,7 @@ namespace SessionService.Controllers
         [Route("PublicMSG"), Authorize(Roles = "Admin")]
         public ActionResult<string> SendPublicMessage(string message)
         {
-
+            ConnectionManager.ProducePublicMsg(message);
             return Ok("Global: " + message);
         }
     }
