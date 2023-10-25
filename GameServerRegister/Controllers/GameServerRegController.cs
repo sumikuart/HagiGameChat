@@ -1,4 +1,5 @@
 ﻿using GameServerRegister.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,7 +19,7 @@ namespace GameServerRegister.Controllers
             return client;
         }
 
-        [HttpGet("GetServer")]
+        [HttpGet("GetServer"), Authorize(Roles = "User, Admin")]
         public async Task<ActionResult<ServerIpDTO>> GetServer()
         {
             Console.WriteLine($"Server registered count: {ServerRegister.Count}");
