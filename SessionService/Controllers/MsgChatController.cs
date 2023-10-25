@@ -33,12 +33,13 @@ namespace SessionService.Controllers
         }
 
 
-        [HttpPost("PrivateMSG")]
+        [HttpPost("PrivateMSG"), Authorize(Roles = "Admin, User")]
         public ActionResult<string> SendPrivateMessage(MessageForm form)
         {
           
             if (DataHandler.OnlineUsers.Contains(form.Target))
             {
+                ConnectionManager.ProduceMsg(form.Message);
                 return Ok("Private msg to :" + form.Target + " - " + form.Message);
             }
             else
@@ -59,7 +60,7 @@ namespace SessionService.Controllers
 
 
         [HttpPost]
-        [Route("GuildMSG")]
+        [Route("GuildMSG"), Authorize(Roles = "Admin, User")]
         public ActionResult<string> SendGuildMessage(MessageForm form)
         {
 
