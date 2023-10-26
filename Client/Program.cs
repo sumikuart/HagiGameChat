@@ -46,7 +46,7 @@ namespace Client
             }
         }
 
-        public const string acceptMessage = "the server has accepted you request and moved you to {currentPos.left}, {currentPos.top}";
+        public const string acceptMessage = "the server has accepted you request and moved you to ";
         public const string seperatorString = "+----------------------------------------------------------------------------------------------------------------------------------+";
         public static LoginObject? login;
 
@@ -127,18 +127,15 @@ namespace Client
                         responseData = System.Text.Encoding.ASCII.GetString(received_data, 0, bytes);
                         if (responseData.StartsWith(acceptMessage))
                         {
-                            responseData.Remove(0, acceptMessage.Length);
-                            string[] postions = responseData.Split(',', 2);
+                            string posString = responseData.Remove(0, acceptMessage.Length);
+                            string[] postions = posString.Split(',', 2);
                             pos = (Int32.Parse(postions[0]), Int32.Parse(postions[1]));
                         }
-                        else
+                        if (seperatorString.Length - responseData.Length > 0)
                         {
-                            if (seperatorString.Length - responseData.Length > 0)
-                            {
-                                responseData += new string(' ', (seperatorString.Length - responseData.Length));
-                            }
-                            messages.Add(responseData);
+                            responseData += new string(' ', (seperatorString.Length - responseData.Length));
                         }
+                        messages.Add(responseData);
                         int cursorPos = Console.GetCursorPosition().Left;
                         Console.SetCursorPosition(0, 0);
                         Console.WriteLine(seperatorString);

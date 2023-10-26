@@ -135,9 +135,10 @@ namespace GameService
                                         {
                                             currentPos = pos;
                                             return_message = $"the server has accepted you request and moved you to {currentPos.left}, {currentPos.top}";
+                                        }else
+                                        {
+                                            return_message = $"the server has denied you request to move to {pos.left}, {pos.top}, you can only move within the range 0 to 10 /n your still at {currentPos.left}, {currentPos.top}";
                                         }
-                                        return_message = $"the server has denied you request to move to {pos.left}, {pos.top}, you can only move within the range 0 to 10 /n your still at {currentPos.left}, {currentPos.top}";
-         
                                     }
                                     byte[] msgPos = System.Text.Encoding.ASCII.GetBytes(return_message);
                                     stream.Write(msgPos, 0, msgPos.Length);
