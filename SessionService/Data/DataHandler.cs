@@ -8,7 +8,7 @@
 
         static DataHandler()
         {
-            OnlineUsers.Add("Kim");
+            //OnlineUsers.Add("Kim");
         }
     }
 }

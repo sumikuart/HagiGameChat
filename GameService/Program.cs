@@ -122,6 +122,8 @@ namespace GameService
                                     guild = await GetGuildAsync(CurrentUsername);
                                     Task.Run(() => MsgConsumer.RabbitConnection(guild, CurrentUsername, stream));
                                     return_message = $"you have succesfully logged on to the server";
+                                    byte[] msg = System.Text.Encoding.ASCII.GetBytes(return_message);
+                                    stream.Write(msg, 0, msg.Length);
                                     break;
 
                                 case "pos":
@@ -135,7 +137,10 @@ namespace GameService
                                             return_message = $"the server has accepted you request and moved you to {currentPos.left}, {currentPos.top}";
                                         }
                                         return_message = $"the server has denied you request to move to {pos.left}, {pos.top}, you can only move within the range 0 to 10 /n your still at {currentPos.left}, {currentPos.top}";
+         
                                     }
+                                    byte[] msgPos = System.Text.Encoding.ASCII.GetBytes(return_message);
+                                    stream.Write(msgPos, 0, msgPos.Length);
                                     break;
 
                                 case "private":
@@ -162,8 +167,8 @@ namespace GameService
                                                 return_message = responseString;
                                             }
                                         }
-                                        byte[] msg = System.Text.Encoding.ASCII.GetBytes(return_message);
-                                        stream.Write(msg, 0, msg.Length);
+                                        byte[] msgPr = System.Text.Encoding.ASCII.GetBytes(return_message);
+                                        stream.Write(msgPr, 0, msgPr.Length);
                                     }
                                     break;
 
@@ -193,7 +198,15 @@ namespace GameService
                                     var JsonDataGlobal = JsonSerializer.Serialize(messageToOutsideGlobal);
                                     StringContent contentGlobal = new StringContent(JsonDataGlobal, Encoding.UTF8, "application/json");
                                     HttpResponseMessage GlobalResponse = await msgClient.PostAsync("/api/MsgChat/SendPublicMessage/PublicMSG", contentGlobal);
-                                    string responseStringGlobal = await GlobalResponse.Content.ReadAsStringAsync();
+ 
+
+                                    if (!GlobalResponse.IsSuccessStatusCode)
+                                    {
+                                        string responseStringGlobal = "Users dont have acces";
+                                        byte[] msgGo = System.Text.Encoding.ASCII.GetBytes(responseStringGlobal);
+                                        stream.Write(msgGo, 0, msgGo.Length);
+                                    }  
+                         
                                     break;
                             }
                         }
